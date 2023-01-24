@@ -89,6 +89,7 @@ body{
 }
 .action-item {
     justify-content: space-around;
+    align-items: center;
 }
 .action{
     justify-content: center;
@@ -190,6 +191,7 @@ label{
     justify-content: center;
     padding: 7px;
     transition: all .2s ease;
+    margin-left: 5px;
     
 }
 #crtBtn:disabled{
@@ -219,9 +221,8 @@ label{
     justify-content:center;
     align-items: center;
     border-radius: 0.3em;
-    width: 60px;
+    width: 70px;
     height: 30px;
-    padding: 0;
 }
 .prio-urgent{
     background-color: red;
