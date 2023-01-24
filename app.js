@@ -99,19 +99,55 @@ class UI{
         })
         this.jobCounter(arr)
     }
+    static deleteHandle(e){
+        const apprvBtn = document.querySelector("#approve-btn")
+        const cancelBtn = document.querySelector("#del-cnc-btn")
+        const deleteBackground = document.querySelector(".delete-background")
+        if(e.target === apprvBtn){
+            table.removeChild(selectedTableItem)
+            const itemId = selectedTableItem.id
+            const unFilteredfound = unFilteredList.find(item => item.id == itemId)
+            const unFilteredIndex = unFilteredList.indexOf(unFilteredfound)
+            unFilteredList.splice(unFilteredIndex, 1)
+            const found = data.find(item => item.id == itemId)
+            if (found !== undefined){ 
+                const indexNumber = data.indexOf(found)
+                data.splice(indexNumber, 1)
+                localStorage.setItem("list", JSON.stringify(data))}
+            app.removeChild(deleteBackground)
+            UI.jobCounter(unFilteredList)
+        }else if(e.target === cancelBtn){
+            app.removeChild(deleteBackground)
+        }else{
+            return
+        }
+
+    }
     static deleteItem(e){
+        UI.deleteWindow(e)
+        const deleteButtons = document.querySelector(".delete-buttons")
+        deleteButtons.addEventListener("click", UI.deleteHandle)
+        
+        
+    }
+    static deleteWindow(e){
+        selectedTableItem = e.target.parentElement.parentElement.parentElement
         const deleteBtn = e.target.classList[1]
         if(deleteBtn==="fa-trash-can"){
-            const tableItem =e.target.parentElement.parentElement.parentElement
-            const itemId =tableItem.id
-            table.removeChild(tableItem)
-            const found = data.find(item => item.id == itemId)
-            console.log(itemId, found)
-            if (found !== undefined){ 
-            console.log(found)
-            const indexNumber = data.indexOf(found)
-            data.splice(indexNumber, 1)
-            localStorage.setItem("list", JSON.stringify(data))}    
+            const deleteBackground = document.createElement("div")
+            deleteBackground.classList.add("delete-background")
+            const deleteWindow = document.createElement("div")
+            deleteWindow.classList.add("delete-window")
+            deleteWindow.innerHTML = `<i id="delete-header" class="fas fa-exclamation-triangle"></i>
+            <h2>Are you sure you want to delete?</h2>
+            <div class="delete-buttons">
+            <button id="approve-btn">Approve</button>
+            <button id="del-cnc-btn">Cancel</button>
+            </div>`
+            
+            deleteBackground.appendChild(deleteWindow)
+            app.appendChild(deleteBackground)          
+  
             
         }
     }
@@ -135,8 +171,8 @@ class UI{
     static addItem(job){
         data.push(job)
         Handler.saveItem()
-        this.createItem(job)
-        Handler.controle()
+        unFilteredList.push(job)
+        unFilteredList = sortMethod(unFilteredList)
         UI.displayListOnUI(unFilteredList)
     }
     static clearItem(){
@@ -197,7 +233,6 @@ class UI{
             <button id="cancel-btn">Cancel</button>
             </div>
           `
-            console.log(editWindow.childNodes)
             const selectedPrios = editWindow.childNodes[10].childNodes
             selectedPrios.forEach(item=>{
                 if(item.value==selectedItemPrio){
@@ -227,15 +262,13 @@ class UI{
                     item.jobPriority = editPrio.value
                 }
             })
-            // selectedTableItem.firstChild.nextSibling.innerText = editText.value
-            // selectedTableItem.firstElementChild.nextElementSibling.innerHTML = editPrio.value
             
             Handler.changeItemText(jobId, editText.value)
             Handler.changeItemPrio(jobId, editPrio.value)
             app.removeChild(editBackground)
             unFilteredList = sortMethod(unFilteredList)
             UI.displayListOnUI(unFilteredList)
-        }
+        }else{return}
     }
 
     static editItem(e){
