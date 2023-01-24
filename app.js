@@ -103,12 +103,15 @@ class UI{
         const deleteBtn = e.target.classList[1]
         if(deleteBtn==="fa-trash-can"){
             const tableItem =e.target.parentElement.parentElement.parentElement
-            const itemText =tableItem.firstChild.nextSibling.innerText
-            const found = data.find(item => item.jobText == itemText)
+            const itemId =tableItem.id
+            table.removeChild(tableItem)
+            const found = data.find(item => item.id == itemId)
+            console.log(itemId, found)
+            if (found !== undefined){ 
+            console.log(found)
             const indexNumber = data.indexOf(found)
             data.splice(indexNumber, 1)
-            localStorage.setItem("list", JSON.stringify(data))
-            table.removeChild(tableItem)
+            localStorage.setItem("list", JSON.stringify(data))}    
             
         }
     }
